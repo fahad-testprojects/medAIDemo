@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
 
 async function fetchAIResponse(query) {
     const apiKey = 'AIzaSyD7Y5TWxo2BpBuhUixzBb07r8qr1dcdHLY'; // Replace with your API key
-    const endpoint = `https://api.huggingface.co/generate?query=${query}`;
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyD7Y5TWxo2BpBuhUixzBb07r8qr1dcdHLY`;
 
     try {
         const response = await fetch(endpoint, {
