@@ -1,10 +1,10 @@
 {
-  "name": "ai-terminal",
+  "name": "med-ai-demo",
   "version": "1.0.0",
-  "dependencies": {
-    "node-fetch": "^2.6.1"
-  },
   "scripts": {
     "build": "echo 'No build step needed'"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.1"
   }
 }
