@@ -1,31 +1,39 @@
-// index.js (Vercel backend)
 const fetch = require('node-fetch');
 
 module.exports = async (req, res) => {
-    if (req.method === 'POST') {
-        const { query } = req.body;
+    if (req.method !== 'POST') {
+        return res.status(405).json({ response: "Method Not Allowed" });
+    }
 
-        if (!query) {
-            return res.status(400).json({ response: "দয়া করে একটি প্রশ্ন লিখুন।" });
-        }
+    const { query } = req.body;
 
+    if (!query) {
+        return res.status(400).json({ response: "দয়া করে একটি প্রশ্ন লিখুন।" });
+    }
+
+    try {
         const aiResponse = await fetchAIResponse(query);
         return res.status(200).json({ response: aiResponse });
-    } else {
-        return res.status(405).json({ response: "Method Not Allowed" });
+    } catch (error) {
+        console.error("Error fetching AI response:", error);
+        return res.status(500).json({ response: "দুঃখিত, সার্ভারে সমস্যা হচ্ছে।" });
     }
 };
 
 async function fetchAIResponse(query) {
-    const apiKey = 'AIzaSyD7Y5TWxo2BpBuhUixzBb07r8qr1dcdHLY'; // Replace with your API key
-    const model = "gemini-1.5-flash"; // Replace with the correct model name
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyD7Y5TWxo2BpBuhUixzBb07r8qr1dcdHLY`;
+    const apiKey = "AIzaSyD7Y5TWxo2BpBuhUixzBb07r8qr1dcdHLY";
+    const model = "gemini-1.5-flash";
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
     try {
         const response = await fetch(endpoint, {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${apiKey}` },
-            body: JSON.stringify({ query })
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: query }] }]
+            })
         });
 
         if (!response.ok) {
@@ -33,7 +41,10 @@ async function fetchAIResponse(query) {
         }
 
         const data = await response.json();
-        return data?.generated_text || "দুঃখিত, আমি উত্তর দিতে পারছি না।";
+
+        // সঠিকভাবে রেসপন্স রিটার্ন করা
+        return data?.candidates?.[0]?.content?.parts?.[0]?.text || "দুঃখিত, আমি উত্তর দিতে পারছি না।";
+
     } catch (error) {
         console.error("Error fetching AI response:", error);
         return "দুঃখিত, কিছু সমস্যা হয়েছে। পুনরায় চেষ্টা করুন।";
