@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>এআই টার্মিনাল</title>
+    <style>
+        body {
+            background: #1e1e1e;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .terminal {
+            width: 80%;
+            max-width: 800px;
+            height: 80%;
+            display: flex;
+            flex-direction: column;
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .output {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            border-bottom: 2px solid #00ff00;
+            white-space: pre-wrap;
+            font-size: 16px;
+        }
+        .input-line {
+            display: flex;
+            padding: 10px;
+            background-color: #2e2e2e;
+            border-top: 2px solid #00ff00;
+        }
+        .prompt {
+            color: #00ff00;
+        }
+        input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            outline: none;
+        }
+        input:focus {
+            border-bottom: 2px solid #00ff00;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="output" id="output">
+            <div>> স্বাগতম, আমি আপনার স্বাস্থ্য সহকারী! প্রশ্ন করুন।</div>
+        </div>
+        <div class="input-line">
+            <span class="prompt">></span>
+            <input type="text" id="userInput" onkeypress="handleKeyPress(event)" autofocus>
+        </div>
+    </div>
+
+    <script>
+        const aiName = "স্বাস্থ্য সহকারী"; // AI name
+        const apiUrl = "https://med-ai-demo.vercel.app/"; // Replace with your Vercel URL
+
+        async function fetchAIResponse(query) {
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data?.response || "দুঃখিত, আমি উত্তর দিতে পারছি না।";
+            } catch (error) {
+                console.error("Error fetching AI response:", error);
+                return "দুঃখিত, কিছু সমস্যা হয়েছে। পুনরায় চেষ্টা করুন।";
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                const input = document.getElementById('userInput');
+                const userText = input.value.trim();
+                if (!userText) return;
+
+                const output = document.getElementById('output');
+                output.innerHTML += `<div>> ${userText}</div>`;
+                input.value = '';
+                output.scrollTop = output.scrollHeight;
+
+                setTimeout(async () => {
+                    output.innerHTML += `<div>> ${aiName}: আপনার প্রশ্ন প্রক্রিয়া করা হচ্ছে...</div>`;
+                    output.scrollTop = output.scrollHeight;
+
+                    const aiResponse = await fetchAIResponse(userText);
+                    output.innerHTML += `<div>> ${aiName}: ${aiResponse}</div>`;
+                    output.scrollTop = output.scrollHeight;
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>
