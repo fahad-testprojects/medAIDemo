@@ -1,12 +1,13 @@
 {
-  "name": "ai-terminal-backend",
+  "name": "med-ai-demo",
   "version": "1.0.0",
-  "description": "Backend for AI Terminal",
+  "description": "",
   "main": "index.js",
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {},
   "scripts": {
     "start": "node index.js"
-  },
-  "dependencies": {
-    "express": "^4.18.2"
   }
 }
