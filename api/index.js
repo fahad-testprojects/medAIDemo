@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
 };
 
 async function fetchAIResponse(query) {
-  const apiKey = "AIzaSyD7Y5TWxo2BpBuhUixzBb07r8qr1dcdHLY"; // এখানে তোমার আসল API Key বসাও
+  const apiKey = "AIzaSyBG6iI4RMjcErB4oDPOIfS7JI92uCupYdc"; // এখানে তোমার আসল API Key বসাও
   const model = "gemini-1.5-flash";
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
