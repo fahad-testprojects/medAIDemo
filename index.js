@@ -7,13 +7,13 @@ export async function POST(req) {
     const MODEL = "gemini-1.5-flash";
     const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
 
+
+async function fetchAIResponse(query) {
     try {
-        const response = await fetch(ENDPOINT, {
+        const response = await fetch("https://med-ai-demo.vercel.app/api", { // তোমার Vercel লিংক
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text }] }]
-            }),
+            body: JSON.stringify({ text: query })
         });
 
         if (!response.ok) {
@@ -21,9 +21,9 @@ export async function POST(req) {
         }
 
         const data = await response.json();
-        return NextResponse.json({ response: data?.candidates?.[0]?.content?.parts?.[0]?.text || "উত্তর পাওয়া যায়নি।" });
+        return data.response || "দুঃখিত, আমি উত্তর দিতে পারছি না।";
     } catch (error) {
-        console.error("API Call Error:", error);
-        return NextResponse.json({ response: "কিছু সমস্যা হয়েছে।" });
+        console.error("Error fetching AI response:", error);
+        return "দুঃখিত, কিছু সমস্যা হয়েছে।";
     }
 }
